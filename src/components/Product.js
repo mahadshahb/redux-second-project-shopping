@@ -1,22 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { add } from '../store/cartSlice';
+import { fetchProducts } from '../store/productSlice';
+import { STATUS } from '../store/productSlice';
 
 const Product = () => {
     const dispatch = useDispatch();
-    const [products, setProducts] = useState([]);
+    // const [products, setProducts] = useState([]);
+    const { data: products, status } = useSelector((state) => state.product);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const response = await fetch('http://fakestoreapi.com/products');
-            const data = await response.json();
-            console.log(data);
-            setProducts(data);
-        }
-        fetchData();
+        dispatch(fetchProducts());
+        // const fetchData = async () => {
+        //     const response = await fetch('http://fakestoreapi.com/products');
+        //     const data = await response.json();
+        //     // console.log(data);
+        //     setProducts(data);
+        // }
+        // fetchData();
     }, []);
     const handleAdd = (pro) => {
         dispatch(add(pro));
+    }
+    if (status === STATUS.LOADING) {
+        return <h2>Loading Data..... :)</h2>
     }
     return (
         <React.Fragment>
